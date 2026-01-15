@@ -1,0 +1,895 @@
+
+<!DOCTYPE html><html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>Hexo</title>
+
+  
+    <meta name="description" content="记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作 1.初始情况展示这是一个发送验证码操作的一个数据包,可以看到请求头做了相关验签操作,以及手机号是被加密的 目前我猜测的是Method Time Sign和请求体是有关联的  任何一个发生改变都会造成验签不通过 也就是老生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="https://xia0mai.github.io/2026/01/05/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作 1.初始情况展示这是一个发送验证码操作的一个数据包,可以看到请求头做了相关验签操作,以及手机号是被加密的 目前我猜测的是Method Time Sign和请求体是有关联的  任何一个发生改变都会造成验签不通过 也就是老生">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071552368.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071559893.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071602251.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071605320.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601070101246.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071617823.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071620186.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071619252.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071624165.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071623413.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601081135647.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071636332.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071636573.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071637452.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071637274.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071638632.png">
+<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071639409.png">
+<meta property="article:published_time" content="2026-01-05T11:54:28.105Z">
+<meta property="article:modified_time" content="2026-01-08T03:45:42.812Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071552368.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"John Doe","sameAs":[]},"dateCreated":"2026-01-05T19:54:28+08:00","dateModified":"2026-01-08T11:45:42+08:00","datePublished":"2026-01-05T19:54:28+08:00","description":"","headline":"","mainEntityOfPage":{"@type":"WebPage","@id":"https://xia0mai.github.io/2026/01/05/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"},"publisher":{"@type":"Organization","name":"John Doe","sameAs":[]},"url":"https://xia0mai.github.io/2026/01/05/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Hexo</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="Search"></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">Recent Update</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/15/hello-world/"><span class="title">Hello World</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">Posted on: <time datetime="2026-01-05T11:54:28.105Z">2026-01-05</time></span><span class="sep updated"></span><span class="text updated">Updated on: <time datetime="2026-01-08T03:45:42.812Z">2026-01-08</time></span></div></div></div>
+    
+  </div>
+  </div><article class="md-text content"><h4 id="记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案-其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路-本文只记录绕过方案-不涉及任何渗透测试操作"><a href="#记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案-其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路-本文只记录绕过方案-不涉及任何渗透测试操作" class="headerlink" title="记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作"></a>记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作</h4><hr>
+<h3 id="1-初始情况展示"><a href="#1-初始情况展示" class="headerlink" title="1.初始情况展示"></a>1.初始情况展示</h3><p><strong>这是一个发送验证码操作的一个数据包,可以看到请求头做了相关验签操作,以及手机号是被加密的</strong></p>
+<p><strong>目前我猜测的是Method Time Sign和请求体是有关联的  任何一个发生改变都会造成验签不通过 也就是老生常谈的防篡改</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071552368.png" alt="image-20260107155218274"></p>
+<h3 id="2-尝试手工寻找加密逻辑以及加密密钥"><a href="#2-尝试手工寻找加密逻辑以及加密密钥" class="headerlink" title="2.尝试手工寻找加密逻辑以及加密密钥"></a>2.尝试手工寻找加密逻辑以及加密密钥</h3><p><strong>一般我喜欢用hooker这个工具先看看能不能hook到相关加解密密钥,以及看看从明文到密文的一个堆栈信息,工具地址如下,这是一个非常好用的工具</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/CreditTone/hooker?tab=readme-ov-file</span><br></pre></td></tr></table></figure>
+
+<p><strong>在发送验证码出抓包查看hook到的信息</strong></p>
+<p><strong>从下图可以发现一处明文到密文的转变,以及相关的堆栈信息</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071559893.png" alt="image-20260107155956835"></p>
+<p><strong>这里我并不清楚这个MessageDigest.update到底是什么作用,我只知道他生成的md5值与我数据包中的sign值相匹配</strong></p>
+<p><strong>但是这个MessageDigest.digest方法应该就是将MessageDigest.update的结果md5加密的意思</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071602251.png" alt="image-20260107160232184"></p>
+<p><strong>sign的生成逻辑现在我们已经知道一半了,sign是由md5加密MessageDigest.update的结果生成的,但是MessageDigest.update这个方法的代码逻辑我们不清楚,这个问题先留着等会再看,先接着看看在发送验证码这一步,请求体加密的那一段的hook结果</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071605320.png" alt="image-20260107160520257"></p>
+<p><strong>看到hook到两组密钥,不想动手叫ai写了个脚本验证了密钥是正确的</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601070101246.png" alt="image-20260107010144198"></p>
+<h3 id="3-ida-pro-mcp初体验"><a href="#3-ida-pro-mcp初体验" class="headerlink" title="3.ida-pro-mcp初体验"></a>3.ida-pro-mcp初体验</h3><p><strong>此时可以说问题已经解决了三分之一,现在加密逻辑我已经知道了,sign生成的方式我也知道了,就是不知道被md5加密的这个值到底是怎么来的,因为不同接口,不同请求他被md5加密前的值是会变化的,最近刚好学习了各种mcp的一些手法,就想着试试用ida-pro-mcp去替我解决这个问题,相关的配置可以看看这篇文章</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://mp.weixin.qq.com/s/ey7oXVW0iUlmaCVRZnaH5A</span><br></pre></td></tr></table></figure>
+
+<p><strong>提示词可以分批完成,不要一口气把想干什么都告诉他,因为上下文有限,而且他不可能给我们一步到位,一步步来我们会知道问题出在哪里然后去纠正他(这里有点错别字)</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071617823.png" alt="image-20260107161727747"></p>
+<p><strong>有点惊讶,图居然很快给了我一个答案,这个app是经过混淆的,人工去找得花不少功夫,下面是app脱壳后反编译的包名类名以及ai给我的回答结果</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071620186.png" alt="6b757430a7595481d74d2c2952866a08"></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071619252.png" alt="image-20260107161908188"></p>
+<p><strong>看到这个结果可能感觉已经找到一半了,但这时候我发现我的思路可能有点问题,我想去hook这个MessageDigest.update的值把他当成解密后的sign,但我完全没必要这么做,我不需要看到sign是什么东西,也不需要手动修改他,我只需要能修改请求体并绕过验签就行了</strong></p>
+<p><strong>这时候观察了一下md5加密前的这一段字符串,发现其实是有迹可循的,有些东西是固定的,有些是请求头获取,有些是从请求体的json中提取进来的</strong></p>
+<hr>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071624165.png" alt="image-20260107162417091"></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071623413.png" alt="image-20260107162313338"></p>
+<p><strong>到这里我现在已经清楚了他整体的验签逻辑</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Method : 当前接口是对应类</span><br><span class="line">Time   : 当前时间戳</span><br><span class="line">Sign   : md5(clientSecret=固定的字符串&amp;clientType=固定的手机型号&amp;method=调用的类&amp;mobile=从JSON请求体中循环取值并拼接后的字符串&amp;requestUri=(请求路径 例如/vuc/user 去除/yuc)&amp;time=时间戳&amp;version=固定的请求头)</span><br><span class="line">Version: 版本号</span><br><span class="line">Client-Type:手机型号</span><br></pre></td></tr></table></figure>
+
+<p><strong>这里还有一关键的问题,就是从JSON请求体中循环取值并拼接后的字符串,他并不是直接一个循环直接拼接过去的,我发现每个包拼接顺序和从json中直接提取数据拼接过去的字符串顺序不一样,这会影响到时候md5加密的值不同,导致验签失败</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Sign   : md5(clientSecret=固定的字符串&amp;clientType=固定的手机型号&amp;method=调用的类&amp;mobile=从JSON请求体中循环取值并拼接后的字符串&amp;requestUri=(请求路径 例如/vuc/user 去除/yuc)&amp;time=时间戳&amp;version=固定的请求头)</span><br></pre></td></tr></table></figure>
+
+<p><strong>这个问题,直接使用ida-mcp让它去给我找出来了这段拼接逻辑,他给出的结果是json中提取到的数据,按字母排序拼接,它给的说明文档如下所示</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601081135647.png" alt="image-20260108113542590"></p>
+<p><strong>综上来看,我们渗透的时候一般只改变请求体,所以我们只需要把每次发包的请求体动态拼接成字符串然后md5加密,就能绕过这个验签了</strong></p>
+<h3 id="4-flasktestheader-py-autodecrypt实现自动化绕过"><a href="#4-flasktestheader-py-autodecrypt实现自动化绕过" class="headerlink" title="4.flasktestheader.py&amp;autodecrypt实现自动化绕过"></a>4.flasktestheader.py&amp;autodecrypt实现自动化绕过</h3><p><strong>接下来开始借助 AI 编写脚本,把之前做过的一些使用frida-rpc&amp;flasktestheader.py&amp;autodecrypt的脚本拉到工作区,让ai学习,参照我之前的例子对我本次要实现自动化加解密的需求重新改一份脚本,期间会出现一些问题,可以这些任务拆分成一些小任务,或者叫他打印日志,方便我们和ai分析问题出在哪,下面直接放图了</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071636332.png" alt="image-20260107163634248"></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071636573.png" alt="image-20260107163655490"></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071637452.png" alt="image-20260107163707364"></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071637274.png" alt="image-20260107163721187"></p>
+<p><strong>最终脚本如下:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding:utf-8 -*-</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">Sign 生成服务器 - 纯 Sign 生成版本</span><br><span class="line">配合 Burp autoDecoder 插件使用</span><br><span class="line"></span><br><span class="line">只负责生成 sign，不做任何加解密</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">from flask import Flask, request</span><br><span class="line">import json</span><br><span class="line">import hashlib</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line"># ========== 配置参数 ==========</span><br><span class="line"></span><br><span class="line"># Sign 参数</span><br><span class="line">CLIENT_SECRET = &quot;Vxxxxx3v2XM&quot;</span><br><span class="line">CLIENT_TYPE = xxxxid&quot;</span><br><span class="line">VERSION = &quot;xxxx.0&quot;</span><br><span class="line">URI_PREFIX = &quot;/vxxx&quot;</span><br><span class="line"></span><br><span class="line">FLASK_PORT = 8888</span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"># ========== HTTP 请求解析 ==========</span><br><span class="line"></span><br><span class="line">def parse_headers_string(headers_str):</span><br><span class="line">    &quot;&quot;&quot;解析 autodecrypt 发送的 headers 字符串&quot;&quot;&quot;</span><br><span class="line">    headers = &#123;&#125;</span><br><span class="line">    path = &quot;&quot;</span><br><span class="line">    </span><br><span class="line">    lines = headers_str.replace(&quot;\r\n&quot;, &quot;\n&quot;).split(&quot;\n&quot;)</span><br><span class="line">    </span><br><span class="line">    for i, line in enumerate(lines):</span><br><span class="line">        if i == 0:</span><br><span class="line">            parts = line.split(&quot; &quot;)</span><br><span class="line">            if len(parts) &gt;= 2:</span><br><span class="line">                path = parts[1].split(&quot;?&quot;)[0]</span><br><span class="line">        elif &quot;: &quot; in line:</span><br><span class="line">            k, v = line.split(&quot;: &quot;, 1)</span><br><span class="line">            headers[k] = v.strip()</span><br><span class="line">    </span><br><span class="line">    return headers, path</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def build_sign(headers, path, body):</span><br><span class="line">    &quot;&quot;&quot;构建 sign&quot;&quot;&quot;</span><br><span class="line">    params = &#123;</span><br><span class="line">        &quot;clientSecret&quot;: CLIENT_SECRET,</span><br><span class="line">        &quot;clientType&quot;: CLIENT_TYPE,</span><br><span class="line">        &quot;version&quot;: VERSION</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    # 提取 Method 和 Time</span><br><span class="line">    for k in [&quot;Method&quot;, &quot;method&quot;, &quot;METHOD&quot;]:</span><br><span class="line">        if k in headers:</span><br><span class="line">            params[&quot;method&quot;] = headers[k]</span><br><span class="line">            break</span><br><span class="line">    </span><br><span class="line">    for k in [&quot;Time&quot;, &quot;time&quot;, &quot;TIME&quot;]:</span><br><span class="line">        if k in headers:</span><br><span class="line">            params[&quot;time&quot;] = headers[k]</span><br><span class="line">            break</span><br><span class="line">    </span><br><span class="line">    # 提取 requestUri</span><br><span class="line">    if path.startswith(URI_PREFIX):</span><br><span class="line">        params[&quot;requestUri&quot;] = path[len(URI_PREFIX):]</span><br><span class="line">    else:</span><br><span class="line">        params[&quot;requestUri&quot;] = path</span><br><span class="line">    </span><br><span class="line">    # 从 body 提取参数（使用加密后的值）</span><br><span class="line">    for k, v in body.items():</span><br><span class="line">        if k != &quot;sign&quot; and v is not None:</span><br><span class="line">            params[k] = str(v)</span><br><span class="line">    </span><br><span class="line">    # 按字母排序拼接</span><br><span class="line">    plaintext = &quot;&amp;&quot;.join([f&quot;&#123;k&#125;=&#123;params[k]&#125;&quot; for k in sorted(params.keys())])</span><br><span class="line">    sign = hashlib.md5(plaintext.encode(&#x27;utf-8&#x27;)).hexdigest()</span><br><span class="line">    </span><br><span class="line">    print(f&quot;[Sign明文] &#123;plaintext&#125;&quot;)</span><br><span class="line">    print(f&quot;[Sign] &#123;sign&#125;&quot;)</span><br><span class="line">    </span><br><span class="line">    return sign</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># ========== Flask 路由 ==========</span><br><span class="line"></span><br><span class="line">@app.route(&#x27;/decode&#x27;, methods=[&quot;POST&quot;])</span><br><span class="line">def decode():</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    解密接口 - 原样返回，不做任何处理</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    body_str = request.form.get(&#x27;dataBody&#x27;, &#x27;&#x27;)</span><br><span class="line">    headers_str = request.form.get(&#x27;dataHeaders&#x27;, &#x27;&#x27;)</span><br><span class="line">    </span><br><span class="line">    print(f&quot;\n&#123;&#x27;=&#x27;*60&#125;&quot;)</span><br><span class="line">    print(f&quot;[Decode 请求 - 原样返回]&quot;)</span><br><span class="line">    print(f&quot;&#123;&#x27;=&#x27;*60&#125;\n&quot;)</span><br><span class="line">    </span><br><span class="line">    # 返回格式：headers + 4个\r\n + body</span><br><span class="line">    if headers_str:</span><br><span class="line">        headers_clean = headers_str.strip()</span><br><span class="line">        headers_clean = headers_clean.replace(&#x27;\r\n&#x27;, &#x27;\n&#x27;).replace(&#x27;\n&#x27;, &#x27;\r\n&#x27;)</span><br><span class="line">        return headers_clean + &quot;\r\n\r\n\r\n\r\n&quot; + body_str</span><br><span class="line">    </span><br><span class="line">    return body_str</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@app.route(&#x27;/encode&#x27;, methods=[&quot;POST&quot;])</span><br><span class="line">def encode():</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    加密接口 - 只生成 sign，不做任何加解密</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    body_str = request.form.get(&#x27;dataBody&#x27;, &#x27;&#x27;)</span><br><span class="line">    headers_str = request.form.get(&#x27;dataHeaders&#x27;, &#x27;&#x27;)</span><br><span class="line">    </span><br><span class="line">    print(f&quot;\n&#123;&#x27;=&#x27;*60&#125;&quot;)</span><br><span class="line">    print(f&quot;[Sign 生成请求]&quot;)</span><br><span class="line">    </span><br><span class="line">    if not headers_str:</span><br><span class="line">        print(&quot;[错误] 没有 headers&quot;)</span><br><span class="line">        return body_str</span><br><span class="line">    </span><br><span class="line">    headers, path = parse_headers_string(headers_str)</span><br><span class="line">    print(f&quot;[路径] &#123;path&#125;&quot;)</span><br><span class="line">    print(f&quot;[Method] &#123;headers.get(&#x27;Method&#x27;, &#x27;N/A&#x27;)&#125;&quot;)</span><br><span class="line">    print(f&quot;[Time] &#123;headers.get(&#x27;Time&#x27;, &#x27;N/A&#x27;)&#125;&quot;)</span><br><span class="line">    </span><br><span class="line">    body = &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    if body_str.strip():</span><br><span class="line">        try:</span><br><span class="line">            body = json.loads(body_str.strip())</span><br><span class="line">            print(f&quot;[Body] &#123;body&#125;&quot;)</span><br><span class="line">        except Exception as e:</span><br><span class="line">            print(f&quot;[错误] &#123;e&#125;&quot;)</span><br><span class="line">    </span><br><span class="line">    # 生成新 sign</span><br><span class="line">    new_sign = build_sign(headers, path, body)</span><br><span class="line">    </span><br><span class="line">    # 替换 Sign</span><br><span class="line">    sign_pattern = re.compile(r&#x27;(Sign:\s*)([^\r\n]+)&#x27;, re.IGNORECASE)</span><br><span class="line">    if sign_pattern.search(headers_str):</span><br><span class="line">        new_headers = sign_pattern.sub(f&#x27;\\g&lt;1&gt;&#123;new_sign&#125;&#x27;, headers_str)</span><br><span class="line">    else:</span><br><span class="line">        new_headers = headers_str.rstrip() + f&quot;\r\nSign: &#123;new_sign&#125;&quot;</span><br><span class="line">    </span><br><span class="line">    print(f&quot;[新Sign] &#123;new_sign&#125;&quot;)</span><br><span class="line">    print(f&quot;&#123;&#x27;=&#x27;*60&#125;\n&quot;)</span><br><span class="line">    </span><br><span class="line">    # 返回格式：headers + 4个\r\n + body</span><br><span class="line">    new_headers_clean = new_headers.strip()</span><br><span class="line">    new_headers_clean = new_headers_clean.replace(&#x27;\r\n&#x27;, &#x27;\n&#x27;).replace(&#x27;\n&#x27;, &#x27;\r\n&#x27;)</span><br><span class="line">    return new_headers_clean + &quot;\r\n\r\n\r\n\r\n&quot; + body_str</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@app.route(&#x27;/test&#x27;, methods=[&quot;GET&quot;])</span><br><span class="line">def test():</span><br><span class="line">    &quot;&quot;&quot;测试接口&quot;&quot;&quot;</span><br><span class="line">    return json.dumps(&#123;</span><br><span class="line">        &quot;status&quot;: &quot;ok&quot;,</span><br><span class="line">        &quot;message&quot;: &quot;Sign 生成服务器运行中&quot;,</span><br><span class="line">        &quot;version&quot;: &quot;4.0 - 纯 Sign 生成版&quot;,</span><br><span class="line">        &quot;endpoints&quot;: &#123;</span><br><span class="line">            &quot;/encode&quot;: &quot;生成 sign（不做加解密）&quot;,</span><br><span class="line">            &quot;/decode&quot;: &quot;原样返回（不做加解密）&quot;,</span><br><span class="line">            &quot;/test&quot;: &quot;测试接口&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;config&quot;: &#123;</span><br><span class="line">            &quot;client_secret&quot;: CLIENT_SECRET[:10] + &quot;...&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, ensure_ascii=False, indent=2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    print(&quot;=&quot; * 60)</span><br><span class="line">    print(&quot;Sign 生成服务器 - 纯 Sign 生成版&quot;)</span><br><span class="line">    print(&quot;=&quot; * 60)</span><br><span class="line">    print(f&quot;端口: &#123;FLASK_PORT&#125;&quot;)</span><br><span class="line">    print(f&quot;接口:&quot;)</span><br><span class="line">    print(f&quot;  /encode  - 生成 sign（不做加解密）&quot;)</span><br><span class="line">    print(f&quot;  /decode  - 原样返回（不做加解密）&quot;)</span><br><span class="line">    print(f&quot;  /test    - 测试接口&quot;)</span><br><span class="line">    print()</span><br><span class="line">    print(&quot;说明:&quot;)</span><br><span class="line">    print(&quot;  - 服务器只负责生成 sign&quot;)</span><br><span class="line">    print(&quot;  - 不做任何 AES 加解密&quot;)</span><br><span class="line">    print(&quot;  - 加解密由 Burp 插件或其他工具完成&quot;)</span><br><span class="line">    print(&quot;=&quot; * 60)</span><br><span class="line">    app.run(host=&quot;0.0.0.0&quot;, port=FLASK_PORT, debug=False)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="5-最终效果展示"><a href="#5-最终效果展示" class="headerlink" title="5.最终效果展示"></a>5.最终效果展示</h3><p><strong>至此,脚本就算是写好了,看看最终效果吧</strong></p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071638632.png" alt="image-20260107163837558"></p>
+<p>此时发包,已经绕过了验签,后续只需要开启autodecrypt中burp各模块的开关,就可以实现全自动的绕过验签</p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071639409.png" alt="image-20260107163926338"></p>
+<p><strong>到结束,其实还有一步没有做,就是请求体的自动化加解密,因为我发现很多包的请求体没有使用aes加密,就直接生成了一个加密后的字典fuzz了一波,没有做成自动化加解密</strong></p>
+<p><strong>感慨一下AI的强大,这个案例虽然不是特别难,但我真的一行代码没写,反编译后的东西我看到混淆了就不想动了,最后居然一行代码都不写就绕过了一个原本不算简单的问题.</strong></p>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>License</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/2026/01/15/hello-world/">Hello World</a></div><div class="item" id="next"></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">John Doe</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">On This Page</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%B0%E5%BD%95%E4%BA%86%E4%B8%80%E4%B8%8B%E5%B7%A5%E4%BD%9C%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%AA%8C%E7%AD%BE%E5%92%8C%E5%8A%A0%E5%AF%86%E7%9A%84app%E7%9A%84%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E7%BB%95%E8%BF%87%E6%96%B9%E6%A1%88-%E5%85%B6%E4%B8%AD%E5%80%BC%E5%BE%97%E5%85%B3%E6%B3%A8%E7%9A%84%E6%98%AF%E5%A6%82%E4%BD%95%E4%B8%8D%E7%9C%8B%E4%B8%80%E7%82%B9%E4%BB%A3%E7%A0%81%E5%92%8C%E5%86%99%E4%B8%80%E7%82%B9%E4%BB%A3%E7%A0%81%E5%B0%B1%E5%AE%9E%E7%8E%B0%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E7%9A%84%E6%80%9D%E8%B7%AF-%E6%9C%AC%E6%96%87%E5%8F%AA%E8%AE%B0%E5%BD%95%E7%BB%95%E8%BF%87%E6%96%B9%E6%A1%88-%E4%B8%8D%E6%B6%89%E5%8F%8A%E4%BB%BB%E4%BD%95%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%93%8D%E4%BD%9C"><span class="toc-text">记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%9D%E5%A7%8B%E6%83%85%E5%86%B5%E5%B1%95%E7%A4%BA"><span class="toc-text">1.初始情况展示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%B0%9D%E8%AF%95%E6%89%8B%E5%B7%A5%E5%AF%BB%E6%89%BE%E5%8A%A0%E5%AF%86%E9%80%BB%E8%BE%91%E4%BB%A5%E5%8F%8A%E5%8A%A0%E5%AF%86%E5%AF%86%E9%92%A5"><span class="toc-text">2.尝试手工寻找加密逻辑以及加密密钥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-ida-pro-mcp%E5%88%9D%E4%BD%93%E9%AA%8C"><span class="toc-text">3.ida-pro-mcp初体验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-flasktestheader-py-autodecrypt%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87"><span class="toc-text">4.flasktestheader.py&amp;autodecrypt实现自动化绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="toc-text">5.最终效果展示</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>Scroll to Top</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `Just`,
+      min: `minutes ago`,
+      hour: `hours ago`,
+      day: `days ago`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `Switched to Light Mode`,
+      dark: `Switched to Dark Mode`,
+      auto: `Switched to Auto Mode`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
