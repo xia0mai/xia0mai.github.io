@@ -17,42 +17,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
-  <title>xia0mai's Blog</title>
+  <title>MCP加持下全自动化绕过验签&加密app - xm's Blog</title>
 
   
     <meta name="description" content="记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作 1.初始情况展示这是一个发送验证码操作的一个数据包,可以看到请求头做了相关验签操作,以及手机号是被加密的 目前我猜测的是Method Time Sign和请求体是有关联的  任何一个发生改变都会造成验签不通过 也就是老生">
 <meta property="og:type" content="article">
-<meta property="og:title" content="xia0mai&#39;s Blog">
-<meta property="og:url" content="https://xia0mai.github.io/2026/01/05/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/">
-<meta property="og:site_name" content="xia0mai&#39;s Blog">
+<meta property="og:title" content="MCP加持下全自动化绕过验签&amp;加密app">
+<meta property="og:url" content="https://xia0mai.github.io/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/">
+<meta property="og:site_name" content="xm&#39;s Blog">
 <meta property="og:description" content="记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作 1.初始情况展示这是一个发送验证码操作的一个数据包,可以看到请求头做了相关验签操作,以及手机号是被加密的 目前我猜测的是Method Time Sign和请求体是有关联的  任何一个发生改变都会造成验签不通过 也就是老生">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071552368.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071559893.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071602251.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071605320.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601070101246.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071617823.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071620186.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071619252.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071624165.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071623413.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601081135647.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071636332.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071636573.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071637452.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071637274.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071638632.png">
-<meta property="og:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071639409.png">
-<meta property="article:published_time" content="2026-01-05T11:54:28.105Z">
-<meta property="article:modified_time" content="2026-01-08T03:45:42.812Z">
+<meta property="og:image" content="https://xia0mai.github.io/images/33.png">
+<meta property="article:published_time" content="2026-01-07T07:52:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T12:37:03.603Z">
 <meta property="article:author" content="xia0mai">
+<meta property="article:tag" content="MCP">
+<meta property="article:tag" content="安全">
+<meta property="article:tag" content="逆向">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601071552368.png">
+<meta name="twitter:image" content="https://xia0mai.github.io/images/33.png">
   
   
   
-  
+  <meta name="keywords" content="安全,MCP,逆向">
 
   <!-- feed -->
   
@@ -61,10 +48,12 @@
 
 
   
+    <link rel="shortcut icon" href="/1.ico">
+  
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"xia0mai","sameAs":[]},"dateCreated":"2026-01-05T19:54:28+08:00","dateModified":"2026-01-08T11:45:42+08:00","datePublished":"2026-01-05T19:54:28+08:00","description":"","headline":"","mainEntityOfPage":{"@type":"WebPage","@id":"https://xia0mai.github.io/2026/01/05/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"},"publisher":{"@type":"Organization","name":"xia0mai","sameAs":[]},"url":"https://xia0mai.github.io/2026/01/05/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/","image":[]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"xia0mai","sameAs":[],"image":"/images/33.png"},"dateCreated":"2026-01-07T15:52:00+08:00","dateModified":"2026-01-15T20:37:03+08:00","datePublished":"2026-01-07T15:52:00+08:00","description":"","headline":"MCP加持下全自动化绕过验签&加密app","mainEntityOfPage":{"@type":"WebPage","@id":"https://xia0mai.github.io/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"},"publisher":{"@type":"Organization","name":"xia0mai","sameAs":[],"image":"/images/33.png","logo":{"@type":"ImageObject","url":"/images/33.png"}},"url":"https://xia0mai.github.io/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/","keywords":"安全, MCP, 逆向","image":[]}</script>
   
 </head>
 <body>
@@ -72,7 +61,7 @@
 <div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
 
 
-<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">xia0mai's Blog</div><div class="sub cap">个人笔记</div></a></div></header>
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/images/33.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">xm's Blog</div></a></div></header>
 
 <div class="nav-area">
 
@@ -83,7 +72,7 @@
 
 
 
-<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"></div></widget>
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"><span class="title">MCP加持下全自动化绕过验签&加密app</span></a></div></widget>
 </div>
 
 </div></aside><div class="l_main" id="main">
@@ -95,8 +84,16 @@
 <div class="article banner top">
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
-<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-05T11:54:28.105Z">2026-01-05</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-01-08T03:45:42.812Z">2026-01-08</time></span></div></div></div>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E9%80%86%E5%90%91-%E5%8A%A0%E8%A7%A3%E5%AF%86/">逆向&加解密</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-07T07:52:00.000Z">2026-01-07</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-01-15T12:37:03.603Z">2026-01-15</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>MCP加持下全自动化绕过验签&加密app</span></h1>
+        
+      </div>
+    </div>
     
   </div>
   </div><article class="md-text content"><h4 id="记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案-其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路-本文只记录绕过方案-不涉及任何渗透测试操作"><a href="#记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案-其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路-本文只记录绕过方案-不涉及任何渗透测试操作" class="headerlink" title="记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作"></a>记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作</h4><hr>
