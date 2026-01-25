@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
   
-  <meta name="robots" content="noindex,follow">
+  
   <meta name="generator" content="Hexo 8.1.1">
   <meta http-equiv='x-dns-prefetch-control' content='on' />
   
@@ -17,24 +17,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
-  <title>标签：MCP - xm's Blog</title>
+  <title>创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险 - xm's Blog</title>
 
   
-    <meta name="description" content="xxxx">
-<meta property="og:type" content="website">
-<meta property="og:title" content="xm&#39;s Blog">
-<meta property="og:url" content="https://xia0mai.github.io/tags/MCP/">
+    <meta name="description" content="记录一次实战中java环境的后渗透回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程 起因是内网中发现某台服务器存在jdwp未授权漏洞,通过该漏洞我可以使用相关的工具达到rce的效果,但是因为不出网且只能一次性执行命令的原因,我无法把服务器上的文件当下来以及上线服务器  ps -ef查看了当前服务器正在运行的进程后发现,服务器没有使用一些中间件,而是只有一个java -jar app.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险">
+<meta property="og:url" content="https://xia0mai.github.io/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/">
 <meta property="og:site_name" content="xm&#39;s Blog">
-<meta property="og:description" content="xxxx">
+<meta property="og:description" content="记录一次实战中java环境的后渗透回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程 起因是内网中发现某台服务器存在jdwp未授权漏洞,通过该漏洞我可以使用相关的工具达到rce的效果,但是因为不出网且只能一次性执行命令的原因,我无法把服务器上的文件当下来以及上线服务器  ps -ef查看了当前服务器正在运行的进程后发现,服务器没有使用一些中间件,而是只有一个java -jar app.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xia0mai.github.io/images/33.png">
+<meta property="article:published_time" content="2026-01-18T07:52:00.000Z">
+<meta property="article:modified_time" content="2026-01-25T07:11:37.201Z">
 <meta property="article:author" content="xia0mai">
+<meta property="article:tag" content="内网">
+<meta property="article:tag" content="后渗透">
+<meta property="article:tag" content="安全">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://xia0mai.github.io/images/33.png">
   
   
   
-  
+  <meta name="keywords" content="安全,内网,后渗透">
 
   <!-- feed -->
   
@@ -48,12 +53,12 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"https://xia0mai.github.io","author":{"@type":"Person","name":"xia0mai","sameAs":[],"image":"/images/33.png"},"name":"xm's Blog","description":"xxxx","url":"https://xia0mai.github.io"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"xia0mai","sameAs":[],"image":"/images/33.png"},"dateCreated":"2026-01-18T15:52:00+08:00","dateModified":"2026-01-25T15:11:37+08:00","datePublished":"2026-01-18T15:52:00+08:00","description":"","headline":"创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险","mainEntityOfPage":{"@type":"WebPage","@id":"https://xia0mai.github.io/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/"},"publisher":{"@type":"Organization","name":"xia0mai","sameAs":[],"image":"/images/33.png","logo":{"@type":"ImageObject","url":"/images/33.png"}},"url":"https://xia0mai.github.io/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/","keywords":"安全, 内网, 后渗透","image":[]}</script>
   
 </head>
 <body>
 
-<div class="l_body index" id="start" layout="undefined" type="undefined" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
 
 
 <header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/images/33.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">xm's Blog</div></a></div></header>
@@ -65,37 +70,82 @@
 <div class="widgets">
 <div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
 
+
+
 <widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/"><span class="title">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></a><a class="item title" href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/"><span class="title">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></a><a class="item title" href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"><span class="title">MCP加持下全自动化绕过验签&加密app</span></a></div></widget>
 </div>
 
 </div></aside><div class="l_main" id="main">
 
-<header class="header mobile-only"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/images/33.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">xm's Blog</div></a></div></header>
-
- 
 
 
 
 
-<div class="navbar top"><div class="navbar-blur"><div class="navbar-container"><nav class="post"><a href="/">近期发布</a><a href="/categories/">分类</a><a class="active" href="/tags/">标签：MCP</a><a href="/archives/">归档</a></nav></div></div></div>
-<div class="post-list post"><a class="post-card post" href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/">
-<article class="md-text"><h2 class="post-title">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</h2><div class="excerpt"><p>首发先知社区
-1https://xz.aliyun.com/news/91212
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E5%86%85%E7%BD%91/">内网</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E5%86%85%E7%BD%91/%E5%90%8E%E6%B8%97%E9%80%8F/">后渗透</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-18T07:52:00.000Z">2026-01-18</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-01-25T07:11:37.201Z">2026-01-25</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="记录一次实战中java环境的后渗透"><a href="#记录一次实战中java环境的后渗透" class="headerlink" title="记录一次实战中java环境的后渗透"></a>记录一次实战中java环境的后渗透</h2><p>回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程</p>
+<p>起因是内网中发现某台服务器存在jdwp未授权漏洞,通过该漏洞我可以使用相关的工具达到rce的效果,但是因为不出网且只能一次性执行命令的原因,我无法把服务器上的文件当下来以及上线服务器</p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251440587.png" alt="image-20260125144002556"></p>
+<p>ps -ef查看了当前服务器正在运行的进程后发现,服务器没有使用一些中间件,而是只有一个java -jar app.jar的命令有点可以,app.jar文件存在服务器的根目录中,但是我无法将服务器文件当下来</p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251441277.png" alt="image-20260125144139251"></p>
+<p>当时我使用以下命令,查看到了该jar包的目录结构,然后从中读取到了配置文件的信息,然后获取了大量的配置文件信息,使得我发现了目标多个nacos以及多个关键数据库账密,从nacos配置项中又翻到大量配置信息,通过该漏洞就累计获取了目标30+数据库权限以及大量服务器权限,从数据库中又翻到配置信息,又接管了目标100+的web后台</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jar -tf &lt;文件名&gt;.jar</span><br></pre></td></tr></table></figure>
+
+<p>下面是以我本地jar包举得一个例子</p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251446550.png" alt="image-20260125144607527"></p>
+<p>查看到目录结构之后,使用如下命令即可把jar包中的配置文件给抽出来,然后cat去查看其中的配置文件内容.这里也可以用unzip命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jar -xf gogogo-jar-with-dependencies.jar ./META-INF/maven/org.example/gogogo/pom.properties</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251448034.png" alt="image-20260125144808004"></p>
+<p>那么除了这种查看jar包结构然后读取其中配置文件敏感信息的方式,还有哪些手法能用于java环境的后渗透呢</p>
+<p>这里我随便启动一个java环境</p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251456047.png" alt="image-20260125145612009"></p>
+<p>查看运行着当前java环境的pid</p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251505398.png"></p>
+<p>提取至文件 &#x2F;tmp&#x2F;heap_full.hprof</p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251506087.png" alt="image-20260125150628055"></p>
+<p>把内存文件下载回本地用相应工具查看其中敏感信息也可以做到不错的效果</p>
+<p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251507798.png" alt="image-20260125150702764"></p>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</a></div></section></div>
 
 
 
-前言接上文,如果说上文ai的作用是让一个不太懂逆向的人也可以绕过的app验签,本文ai的作用就是让一个不太懂逆向的人快速绕过app的验签,且在其中发现大模型的一些...</p></div><div class="meta cap"><span class="cap" id="post-meta"><svg style="margin-bottom:2px" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972c.697-.67 1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724"/><path fill="currentColor" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828C4.343 22 6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172C22 19.658 22 17.772 22 14" opacity=".5"/><path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><time datetime="2026-01-18T07:52:00.000Z">2026-01-18</time></span><span class="cap breadcrumb"><svg style="margin-bottom:1px" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M2 6.95c0-.883 0-1.324.07-1.692A4 4 0 0 1 5.257 2.07C5.626 2 6.068 2 6.95 2c.386 0 .58 0 .766.017a4 4 0 0 1 2.18.904c.144.119.28.255.554.529L11 4c.816.816 1.224 1.224 1.712 1.495a4 4 0 0 0 .848.352C14.098 6 14.675 6 15.828 6h.374c2.632 0 3.949 0 4.804.77c.079.07.154.145.224.224c.77.855.77 2.172.77 4.804V14c0 3.771 0 5.657-1.172 6.828C19.657 22 17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.172C2 19.657 2 17.771 2 14z" opacity=".5"/><path fill="currentColor" d="M20 6.238c0-.298-.005-.475-.025-.63a3 3 0 0 0-2.583-2.582C17.197 3 16.965 3 16.5 3H9.988c.116.104.247.234.462.45L11 4c.816.816 1.224 1.224 1.712 1.495a4 4 0 0 0 .849.352C14.098 6 14.675 6 15.829 6h.373c1.78 0 2.957 0 3.798.238"/><path fill="currentColor" fill-rule="evenodd" d="M12.25 10a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75" clip-rule="evenodd"/></svg><span>逆向&加解密 / ai</span></span></div></article>
-</a><a class="post-card post" href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/">
-<article class="md-text"><h2 class="post-title">MCP加持下全自动化绕过验签&加密app</h2><div class="excerpt"><p>记录了一下工作中遇到的验签和加密的app的全自动化分析和绕过方案,其中值得关注的是如何不看一点代码和写一点代码就实现全自动化绕过的思路,本文只记录绕过方案,不涉及任何渗透测试操作
-首发自先知社区
-1https://xz.aliyun.com/news...</p></div><div class="meta cap"><span class="cap" id="post-meta"><svg style="margin-bottom:2px" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972c.697-.67 1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724"/><path fill="currentColor" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828C4.343 22 6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172C22 19.658 22 17.772 22 14" opacity=".5"/><path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><time datetime="2026-01-07T07:52:00.000Z">2026-01-07</time></span><span class="cap breadcrumb"><svg style="margin-bottom:1px" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M2 6.95c0-.883 0-1.324.07-1.692A4 4 0 0 1 5.257 2.07C5.626 2 6.068 2 6.95 2c.386 0 .58 0 .766.017a4 4 0 0 1 2.18.904c.144.119.28.255.554.529L11 4c.816.816 1.224 1.224 1.712 1.495a4 4 0 0 0 .848.352C14.098 6 14.675 6 15.828 6h.374c2.632 0 3.949 0 4.804.77c.079.07.154.145.224.224c.77.855.77 2.172.77 4.804V14c0 3.771 0 5.657-1.172 6.828C19.657 22 17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.172C2 19.657 2 17.771 2 14z" opacity=".5"/><path fill="currentColor" d="M20 6.238c0-.298-.005-.475-.025-.63a3 3 0 0 0-2.583-2.582C17.197 3 16.965 3 16.5 3H9.988c.116.104.247.234.462.45L11 4c.816.816 1.224 1.224 1.712 1.495a4 4 0 0 0 .849.352C14.098 6 14.675 6 15.829 6h.373c1.78 0 2.957 0 3.798.238"/><path fill="currentColor" fill-rule="evenodd" d="M12.25 10a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75" clip-rule="evenodd"/></svg><span>逆向&加解密</span></span></div></article>
-</a></div>
+
 
 
 <footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">xia0mai</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
 </div></footer>
 <div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
-</aside><div class='float-panel'>
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F"><span class="toc-text">记录一次实战中java环境的后渗透</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
   <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
   </button>
