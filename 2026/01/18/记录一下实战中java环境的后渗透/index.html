@@ -17,19 +17,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
-  <title>创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险 - xm's Blog</title>
+  <title>记录一次实战中java环境的后渗透 - xm's Blog</title>
 
   
-    <meta name="description" content="记录一次实战中java环境的后渗透回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程 起因是内网中发现某台服务器存在jdwp未授权漏洞,通过该漏洞我可以使用相关的工具达到rce的效果,但是因为不出网且只能一次性执行命令的原因,我无法把服务器上的文件当下来以及上线服务器  ps -ef查看了当前服务器正在运行的进程后发现,服务器没有使用一些中间件,而是只有一个java -jar app.">
+    <meta name="description" content="回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程 起因是内网中发现某台服务器存在jdwp未授权漏洞,通过该漏洞我可以使用相关的工具达到rce的效果,但是因为不出网且只能一次性执行命令的原因,我无法把服务器上的文件当下来以及上线服务器  ps -ef查看了当前服务器正在运行的进程后发现,服务器没有使用一些中间件,而是只有一个java -jar app.jar的命令有点可以,app.ja">
 <meta property="og:type" content="article">
-<meta property="og:title" content="创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险">
+<meta property="og:title" content="记录一次实战中java环境的后渗透">
 <meta property="og:url" content="https://xia0mai.github.io/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/">
 <meta property="og:site_name" content="xm&#39;s Blog">
-<meta property="og:description" content="记录一次实战中java环境的后渗透回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程 起因是内网中发现某台服务器存在jdwp未授权漏洞,通过该漏洞我可以使用相关的工具达到rce的效果,但是因为不出网且只能一次性执行命令的原因,我无法把服务器上的文件当下来以及上线服务器  ps -ef查看了当前服务器正在运行的进程后发现,服务器没有使用一些中间件,而是只有一个java -jar app.">
+<meta property="og:description" content="回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程 起因是内网中发现某台服务器存在jdwp未授权漏洞,通过该漏洞我可以使用相关的工具达到rce的效果,但是因为不出网且只能一次性执行命令的原因,我无法把服务器上的文件当下来以及上线服务器  ps -ef查看了当前服务器正在运行的进程后发现,服务器没有使用一些中间件,而是只有一个java -jar app.jar的命令有点可以,app.ja">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xia0mai.github.io/images/33.png">
 <meta property="article:published_time" content="2026-01-18T07:52:00.000Z">
-<meta property="article:modified_time" content="2026-01-25T07:11:37.201Z">
+<meta property="article:modified_time" content="2026-01-25T07:14:10.117Z">
 <meta property="article:author" content="xia0mai">
 <meta property="article:tag" content="内网">
 <meta property="article:tag" content="后渗透">
@@ -53,7 +53,7 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"xia0mai","sameAs":[],"image":"/images/33.png"},"dateCreated":"2026-01-18T15:52:00+08:00","dateModified":"2026-01-25T15:11:37+08:00","datePublished":"2026-01-18T15:52:00+08:00","description":"","headline":"创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险","mainEntityOfPage":{"@type":"WebPage","@id":"https://xia0mai.github.io/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/"},"publisher":{"@type":"Organization","name":"xia0mai","sameAs":[],"image":"/images/33.png","logo":{"@type":"ImageObject","url":"/images/33.png"}},"url":"https://xia0mai.github.io/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/","keywords":"安全, 内网, 后渗透","image":[]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"xia0mai","sameAs":[],"image":"/images/33.png"},"dateCreated":"2026-01-18T15:52:00+08:00","dateModified":"2026-01-25T15:14:10+08:00","datePublished":"2026-01-18T15:52:00+08:00","description":"","headline":"记录一次实战中java环境的后渗透","mainEntityOfPage":{"@type":"WebPage","@id":"https://xia0mai.github.io/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/"},"publisher":{"@type":"Organization","name":"xia0mai","sameAs":[],"image":"/images/33.png","logo":{"@type":"ImageObject","url":"/images/33.png"}},"url":"https://xia0mai.github.io/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/","keywords":"安全, 内网, 后渗透","image":[]}</script>
   
 </head>
 <body>
@@ -72,7 +72,7 @@
 
 
 
-<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/"><span class="title">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></a><a class="item title" href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/"><span class="title">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></a><a class="item title" href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"><span class="title">MCP加持下全自动化绕过验签&加密app</span></a></div></widget>
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/"><span class="title">记录一次实战中java环境的后渗透</span></a><a class="item title" href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/"><span class="title">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></a><a class="item title" href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"><span class="title">MCP加持下全自动化绕过验签&加密app</span></a></div></widget>
 </div>
 
 </div></aside><div class="l_main" id="main">
@@ -85,18 +85,18 @@
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
 <span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E5%86%85%E7%BD%91/">内网</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E5%86%85%E7%BD%91/%E5%90%8E%E6%B8%97%E9%80%8F/">后渗透</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-18T07:52:00.000Z">2026-01-18</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-01-25T07:11:37.201Z">2026-01-25</time></span></div></div></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-18T07:52:00.000Z">2026-01-18</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-01-25T07:14:10.117Z">2026-01-25</time></span></div></div></div>
     
     <div class="bottom only-title">
       
       <div class="text-area">
-        <h1 class="text title"><span>创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></h1>
+        <h1 class="text title"><span>记录一次实战中java环境的后渗透</span></h1>
         
       </div>
     </div>
     
   </div>
-  </div><article class="md-text content"><h2 id="记录一次实战中java环境的后渗透"><a href="#记录一次实战中java环境的后渗透" class="headerlink" title="记录一次实战中java环境的后渗透"></a>记录一次实战中java环境的后渗透</h2><p>回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程</p>
+  </div><article class="md-text content"><p>回顾一下去年在内网实战中遇到的一个jar包启动的环境后渗透过程</p>
 <p>起因是内网中发现某台服务器存在jdwp未授权漏洞,通过该漏洞我可以使用相关的工具达到rce的效果,但是因为不出网且只能一次性执行命令的原因,我无法把服务器上的文件当下来以及上线服务器</p>
 <p><img src="https://xiaomai-1320212019.cos.ap-beijing.myqcloud.com/imgs/blog202601251440587.png" alt="image-20260125144002556"></p>
 <p>ps -ef查看了当前服务器正在运行的进程后发现,服务器没有使用一些中间件,而是只有一个java -jar app.jar的命令有点可以,app.jar文件存在服务器的根目录中,但是我无法将服务器文件当下来</p>
@@ -130,7 +130,7 @@
 
 </div>
 
-<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</a></div></section></div>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/">MCP加持下全自动化绕过验签&加密app</a></div></section></div>
 
 
 
@@ -140,12 +140,7 @@
 <footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">xia0mai</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
 </div></footer>
 <div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
-<div class="widgets">
-
-
-
-<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F"><span class="toc-text">记录一次实战中java环境的后渗透</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
-</div></aside><div class='float-panel'>
+</aside><div class='float-panel'>
   <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
   </button>
