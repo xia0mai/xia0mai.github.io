@@ -20,16 +20,16 @@
   <title>创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险 - xm's Blog</title>
 
   
-    <meta name="description" content="首发先知社区 1https:&#x2F;&#x2F;xz.aliyun.com&#x2F;news&#x2F;91212    前言接上文,如果说上文ai的作用是让一个不太懂逆向的人也可以绕过的app验签,本文ai的作用就是让一个不太懂逆向的人快速绕过app的验签,且在其中发现大模型的一些隐藏攻击面 将app绕过验签等工作流做成skill下面这段文本是我给大模型的提示词同时也几乎是我平时绕过app验签或者加密的一个工作流 1主要用到的工">
+    <meta name="description" content="首发自先知社区 1https:&#x2F;&#x2F;xz.aliyun.com&#x2F;news&#x2F;91212    前言接上文,如果说上文ai的作用是让一个不太懂逆向的人也可以绕过的app验签,本文ai的作用就是让一个不太懂逆向的人快速绕过app的验签,且在其中发现大模型的一些隐藏攻击面 将app绕过验签等工作流做成skill下面这段文本是我给大模型的提示词同时也几乎是我平时绕过app验签或者加密的一个工作流 1主要用到的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险">
 <meta property="og:url" content="https://xia0mai.github.io/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/">
 <meta property="og:site_name" content="xm&#39;s Blog">
-<meta property="og:description" content="首发先知社区 1https:&#x2F;&#x2F;xz.aliyun.com&#x2F;news&#x2F;91212    前言接上文,如果说上文ai的作用是让一个不太懂逆向的人也可以绕过的app验签,本文ai的作用就是让一个不太懂逆向的人快速绕过app的验签,且在其中发现大模型的一些隐藏攻击面 将app绕过验签等工作流做成skill下面这段文本是我给大模型的提示词同时也几乎是我平时绕过app验签或者加密的一个工作流 1主要用到的工">
+<meta property="og:description" content="首发自先知社区 1https:&#x2F;&#x2F;xz.aliyun.com&#x2F;news&#x2F;91212    前言接上文,如果说上文ai的作用是让一个不太懂逆向的人也可以绕过的app验签,本文ai的作用就是让一个不太懂逆向的人快速绕过app的验签,且在其中发现大模型的一些隐藏攻击面 将app绕过验签等工作流做成skill下面这段文本是我给大模型的提示词同时也几乎是我平时绕过app验签或者加密的一个工作流 1主要用到的">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xia0mai.github.io/images/33.png">
 <meta property="article:published_time" content="2026-01-18T07:52:00.000Z">
-<meta property="article:modified_time" content="2026-01-22T08:09:39.000Z">
+<meta property="article:modified_time" content="2026-01-25T07:16:55.759Z">
 <meta property="article:author" content="xia0mai">
 <meta property="article:tag" content="MCP">
 <meta property="article:tag" content="安全">
@@ -53,7 +53,7 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"xia0mai","sameAs":[],"image":"/images/33.png"},"dateCreated":"2026-01-18T15:52:00+08:00","dateModified":"2026-01-22T16:09:39+08:00","datePublished":"2026-01-18T15:52:00+08:00","description":"","headline":"创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险","mainEntityOfPage":{"@type":"WebPage","@id":"https://xia0mai.github.io/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/"},"publisher":{"@type":"Organization","name":"xia0mai","sameAs":[],"image":"/images/33.png","logo":{"@type":"ImageObject","url":"/images/33.png"}},"url":"https://xia0mai.github.io/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/","keywords":"安全, MCP, 逆向","image":[]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"xia0mai","sameAs":[],"image":"/images/33.png"},"dateCreated":"2026-01-18T15:52:00+08:00","dateModified":"2026-01-25T15:16:55+08:00","datePublished":"2026-01-18T15:52:00+08:00","description":"","headline":"创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险","mainEntityOfPage":{"@type":"WebPage","@id":"https://xia0mai.github.io/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/"},"publisher":{"@type":"Organization","name":"xia0mai","sameAs":[],"image":"/images/33.png","logo":{"@type":"ImageObject","url":"/images/33.png"}},"url":"https://xia0mai.github.io/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/","keywords":"安全, MCP, 逆向","image":[]}</script>
   
 </head>
 <body>
@@ -72,7 +72,7 @@
 
 
 
-<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/"><span class="title">记录一次实战中java环境的后渗透</span></a><a class="item title" href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/"><span class="title">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></a><a class="item title" href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"><span class="title">MCP加持下全自动化绕过验签&加密app</span></a></div></widget>
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/18/%E5%88%9B%E5%BB%BA%E9%A6%96%E4%B8%AA%E8%A7%A3%E5%AF%86Skill%E7%9A%84%E6%94%B6%E8%8E%B7%E4%B8%8E%E5%8F%8D%E6%80%9D%EF%BC%9A%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87vs%E6%81%B6%E6%84%8F%E6%8A%95%E6%AF%92%E9%A3%8E%E9%99%A9/"><span class="title">创建首个解密Skill的收获与反思：效率提升vs恶意投毒风险</span></a><a class="item title" href="/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/"><span class="title">记录一次实战中java环境的后渗透</span></a><a class="item title" href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/"><span class="title">MCP加持下全自动化绕过验签&加密app</span></a></div></widget>
 </div>
 
 </div></aside><div class="l_main" id="main">
@@ -85,7 +85,7 @@
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
 <span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E9%80%86%E5%90%91-%E5%8A%A0%E8%A7%A3%E5%AF%86/">逆向&加解密</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E9%80%86%E5%90%91-%E5%8A%A0%E8%A7%A3%E5%AF%86/ai/">ai</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-18T07:52:00.000Z">2026-01-18</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-01-22T08:09:39.000Z">2026-01-22</time></span></div></div></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-18T07:52:00.000Z">2026-01-18</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-01-25T07:16:55.759Z">2026-01-25</time></span></div></div></div>
     
     <div class="bottom only-title">
       
@@ -96,7 +96,7 @@
     </div>
     
   </div>
-  </div><article class="md-text content"><p>首发先知社区</p>
+  </div><article class="md-text content"><p>首发自先知社区</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://xz.aliyun.com/news/91212</span><br></pre></td></tr></table></figure>
 
 
@@ -156,7 +156,7 @@
 
 </div>
 
-<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/">记录一次实战中java环境的后渗透</a></div></section></div>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2026/01/18/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%AE%9E%E6%88%98%E4%B8%ADjava%E7%8E%AF%E5%A2%83%E7%9A%84%E5%90%8E%E6%B8%97%E9%80%8F/">记录一次实战中java环境的后渗透</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/01/07/MCP%E5%8A%A0%E6%8C%81%E4%B8%8B%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96%E7%BB%95%E8%BF%87%E9%AA%8C%E7%AD%BE&%E5%8A%A0%E5%AF%86app/">MCP加持下全自动化绕过验签&加密app</a></div></section></div>
 
 
 
